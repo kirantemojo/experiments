@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js nojs"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/foundation.css">
+        <link rel="stylesheet" href="css/custom.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div id="wrapper">
+            <header>
+                <div id="img"><img src="http://www.bobbyberberyan.com/wp-content/uploads/2012/03/HTML5CSS3Logos.svg" alt=""></div>
+                 <!-- <div id="img"><img src="http://ohdoylerules.com/content/images/css3.svg" alt=""></div> -->
+                <h3>D3 JS - SVG Canvas</h3>
+                
+            </header>
+            <section class="wrapper">
+            </section>
+            <footer id="footer">
+                <h6>jKefex JS - Experiments - Amruthaluri Kiran Kumar</h6>
+            </footer>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/d3.v3.min.js"></script>
+        <script>
+       var canvas = d3.select('.wrapper')
+                        .append('svg')
+                        .attr({'width':700,'height':550});
+        var area = d3.svg.area()
+                        .interpolate('linear-closed')
+                        .x1(function(d){ return d.x; })
+                        .y1(function(d){ return d.y; });
+        var max1 = 454, max2 = 70, may = 399;
+        var colors = d3.scale.category10();
+        var yx = d3.scale.linear()
+                        .domain([0,may])
+                        .range([0,(may*1.15)]);
+        var px = function(d,i){ return d+(10*i); };
+        var nx = function(d,i){ return d-(10*i); };
+        var layers = d3.range(7).map(function(val,ind){
+          return {"values":[
+            {'x':px(max2,val),'y':yx(may)},
+            {'x':nx(max1,val),'y':yx(may)},
+            {'x':nx(px(max1,1),val),'y':may},
+            {'x':px(nx(max2,1),val),'y':may}
+          ]};
+        });
+        var layerTrans = d3.range(8).map(function(val,ind){
+          return {"values":[
+            {'x':px(0,val),'y':yx(0)},
+            {'x':nx(0,val),'y':yx(0)},
+            {'x':nx(px(0,1),val),'y':0},
+            {'x':px(nx(0,1),val),'y':0}
+          ]};
+        });
+        var stack = d3.layout.stack()
+                        .offset('wiggle')
+                        .values(function(d){ return d.values; });
+        var group = canvas.append('g')
+                        .attr('transform','translate(38,-376)');
+
+        var path = group.selectAll('path')
+                        .data(stack(layers))
+                        .enter()
+                        .append('path')
+                        .attr('transform',function(d,i){ return 'translate(33,'+(i*72)+')'; })
+                        .attr('d',function(d){ return area(d.values); })
+                        .style({'fill':function(d,i){ return colors(i); },'stroke':'#000','stroke-width':2});
+        </script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-43056567-1', 'kiranml1.github.io');
+          ga('send', 'pageview');
+        </script>
+        <script>
+          (function(H){H.className=H.className.replace(/\bnojs\b/,'yepjs')})(document.documentElement);
+        </script>
+    </body>
+</html>

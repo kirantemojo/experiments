@@ -1,0 +1,11 @@
+body {
+	margin-top: 50px;
+	margin-bottom: 50px;
+	background: none;
+}
+
+.full {
+  background: hsla(0, 0%, 80%, 1);
+}
+
+ul { list-style: none; }

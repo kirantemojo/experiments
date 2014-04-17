@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js nojs"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/foundation.css">
+        <link rel="stylesheet" href="css/custom.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div id="wrapper">
+            <header>
+                <div id="img"><img src="http://www.bobbyberberyan.com/wp-content/uploads/2012/03/HTML5CSS3Logos.svg" alt=""></div>
+                 <!-- <div id="img"><img src="http://ohdoylerules.com/content/images/css3.svg" alt=""></div> -->
+                <h3>D3 JS - SVG Canvas</h3>
+                
+            </header>
+            <section class="wrapper">
+            </section>
+            <footer id="footer">
+                <h6>jKefex JS - Experiments - Amruthaluri Kiran Kumar</h6>
+            </footer>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/d3.v3.min.js"></script>
+        <script>
+        var lostdata = [78, 67, 88, 78, 67,88,78,67,88,78,67,88,67];
+        var wondata = [22, 33, 12, 22, 33,12,22,33,12,22,33,12,33];
+        var categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep','Oct','Nov','Dec','Jan'];
+
+        var colors = ['#0000b4','#BFEF61'];
+
+        var data = [''];
+
+        var grid = d3.range(10).map(function(i){
+            return {'x1':0,'y1':0,'x2':660,'y2':0};
+        });
+
+        var xscale = d3.scale.linear()
+                        .domain([0,12])
+                        .range([0,600]);
+
+        var yscale = d3.scale.linear()
+                        .domain([100,0])
+                        .range([0,450]);
+
+        var colorScale = d3.scale.quantize()
+                        .domain([0,categories.length])
+                        .range(colors);
+
+        var canvas = d3.select('.wrapper')
+                        .append('svg')
+                        .attr({'width':1100,'height':550});
+
+        var grids = canvas.append('g')
+                          .attr('id','grid')
+                          .attr('transform','translate(50,50)')
+                          .selectAll('line')
+                          .data(grid)
+                          .enter()
+                          .append('line')
+                          .attr({'x1':function(d){ return d.x1; },
+                                 'y1':function(d,i){ return i*50; },
+                                 'x2':function(d){ return d.x2; },
+                                 'y2':function(d,i){ return i*50; },
+                            })
+                          .style({'stroke':'#adadad','stroke-width':'1px'});
+
+        var xAxis = d3.svg.axis();
+            xAxis
+                .orient('bottom')
+                .scale(xscale)
+                .tickFormat(function(d,i){ return categories[i]; })
+                .tickValues(d3.range(21));
+
+        var yAxis = d3.svg.axis();
+            yAxis
+                .orient('left')
+                .scale(yscale)
+                .tickSize(2)
+                .tickFormat(function(d,i){ console.log(d); return d+"%"; })
+                .tickValues([0,10,20,30,40,50,60,70,80,90,100]);
+
+        var y_xis = canvas.append('g')
+                          .attr("transform", "translate(45,50)")
+                          .attr('id','yaxis')
+                          .call(yAxis);
+
+        var x_xis = canvas.append('g')
+                          .attr("transform", "translate(65,500)")
+                          .attr('id','xaxis')
+                          .call(xAxis);
+
+        var wonchart = canvas.append('g')
+                            .attr("transform", "translate(60,50)")
+                            .attr('id','wonbars')
+                            .selectAll('rect')
+                            .data(wondata)
+                            .enter()
+                            .append('rect')
+                            .attr('height',function(d){ return 0; })
+                            .attr({'x':function(d,i){ if(i>0){  return xscale(i); } },'y':function(d){ return 450-yscale(d); } })
+                            .style('fill',function(d,i){ return colors[0]; })
+                            .attr('width',function(d){ return 30; });
+
+        var losschart = canvas.append('g')
+                            .attr("transform", "translate(60,50)")
+                            .attr('id','lossbars')
+                            .selectAll('rect')
+                            .data(lostdata)
+                            .enter()
+                            .append('rect')
+                            .attr("height", function(d) {return 0; })
+                            .attr({'x':function(d,i){ if(i>0){  return xscale(i); } },'y':function(d){ return 0; } })
+                            .style('fill',function(d,i){ return colors[1]; })
+                            .attr('width',function(d){ return 30; });
+
+        var transit = d3.select("svg").selectAll("#wonbars rect")
+                            .data(wondata)
+                            .transition()
+                            .duration(1000) 
+                            .attr("height", function(d) {return yscale(d); });
+
+        d3.select("svg").selectAll("#lossbars rect")
+                .data(lostdata)
+                .transition()
+                .duration(1000) 
+                .attr("height", function(d) {return yscale(d); });
+
+
+//pie chart
+        var piedata = [{"label":"one", "value":78}, 
+            {"label":"two", "value":22} ];
+
+        var colorscale =  d3.scale.category10();
+
+        var arc = d3.svg.arc()
+                        .innerRadius(0)
+                        .outerRadius(100);
+
+        var arcOver = d3.svg.arc()
+                        .innerRadius(0)
+                        .outerRadius(120 + 10);
+
+        var pie = d3.layout.pie()
+                        .value(function(d){ return d.value; });
+
+
+        var renderarcs = canvas.append('g')
+                        .attr('transform','translate(850,150)')
+                        .selectAll('.arc')
+                        .data(pie(piedata))
+                        .enter()
+                        .append('g')
+                        .attr('class',"arc");
+
+        renderarcs.append('path')
+                .attr('d',arc)
+                .attr('fill',function(d,i){ return colorscale(i); })
+                .on("click", function(d) {
+                        d3.select(this).transition()
+                           .duration(1000)
+                           .attr("d", arcOver);
+                     })
+                .on("mouseout", function(d) {
+                        d3.select(this).transition()
+                           .duration(1000)
+                           .attr("d", arc);
+                     });
+
+        renderarcs.append('text')
+                .attr('transform',function(d) { 
+                        var c = arc.centroid(d);
+                        console.log(c);
+                        return "translate(" + c[0] +"," + c[1]+ ")";
+                    })
+                .text(function(d){ return d.value+"%"; })
+                .style('fill','#fff');
+
+//pie chart -2 
+        
+        var pietdata = [{"label":"one", "value":50}, 
+            {"label":"two", "value":30} ,
+            {"label":"three","value":12},
+            {"label":"four","value":25}];
+
+        var colorscale2 = d3.scale.linear()
+                                .domain([0,pietdata.length])
+                                .range(colors);
+
+        var renderarcs = canvas.append('g')
+                        .attr('transform','translate(850,400)')
+                        .selectAll('.arc')
+                        .data(pie(pietdata))
+                        .enter()
+                        .append('g')
+                        .attr('class',"arc");
+
+        renderarcs.append('path')
+                .attr('d',arc)
+                .attr('fill',function(d,i){ return colorscale(i); })
+                .on("click", function(d) {
+                        d3.select(this).transition()
+                           .duration(1000)
+                           .attr("d", arcOver);
+                     })
+                .on("mouseout", function(d) {
+                        d3.select(this).transition()
+                           .duration(1000)
+                           .attr("d", arc);
+                     });
+
+        renderarcs.append('text')
+                .attr('transform',function(d) { 
+                        var c = arc.centroid(d);
+                        console.log(c);
+                        return "translate(" + c[0] +"," + c[1]+ ")";
+                    })
+                .text(function(d){ return d.value+"%"; })
+                .style('fill','#fff');
+        </script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-43056567-1', 'kiranml1.github.io');
+          ga('send', 'pageview');
+        </script>
+        <script>
+          (function(H){H.className=H.className.replace(/\bnojs\b/,'yepjs')})(document.documentElement);
+        </script>
+    </body>
+</html>

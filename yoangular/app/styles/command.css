@@ -1,0 +1,16 @@
+#console input[type=text]{
+	width:95%;
+	position: fixed;
+	bottom: 0;
+	padding: 4px 10px;
+	background:hsla(159, 0%, 9%, 1);
+	color: #fff;
+	font-weight: bold;
+	border: hsla(159, 0%, 66%, 1);
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}

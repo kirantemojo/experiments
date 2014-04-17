@@ -1,0 +1,5 @@
+/* line 1, sass/dashboard.scss */
+.panel-body .btn:not(.btn-block) {
+  width: 120px;
+  margin-bottom: 10px;
+}

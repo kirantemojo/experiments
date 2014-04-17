@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jKefex JS</title>
+	<style>
+	#wrapper {
+		width:100%;
+		height:100%;
+		position: absolute;
+		background: hsla(0, 0%, 80%, 1) !important;
+	}
+	#wrapperone {
+		position: absolute;
+	}
+	video {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+	body {
+		margin: 0;
+		padding: 0;
+		background: hsla(0, 0%, 80%, 1) !important;
+		overflow: hidden;
+	}
+	circle {
+	  fill: none;
+	  stroke-width: 1.5px;
+	}
+	</style>
+	  <!-- Chang URLs to wherever Video.js files will be hosted -->
+	  <link href="video-js.css" rel="stylesheet" type="text/css">
+	  <!-- video.js must be in the <head> for older IEs to work. -->
+	  <script src="video.js"></script>
+
+	  <!-- Unless using the CDN hosted version, update the URL to the Flash SWF -->
+	  <script>
+	    videojs.options.flash.swf = "video-js.swf";
+	  </script>
+</head>
+<body>
+    <div id='wrapper'>
+	   <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" 
+	      data-setup="{}">
+	    <source src="dooriyan.mp4" type='video/mp4' />
+	    <source src="dooriyan.webm" type='video/webm' />
+	    <source src="dooriyan.ogv" type='video/ogg' />
+	    <track kind="captions" src="demo.captions.vtt" srclang="en" label="English"></track><!-- Tracks need an ending tag thanks to IE9 -->
+	    <track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"></track><!-- Tracks need an ending tag thanks to IE9 -->
+	  </video>
+    </div>
+    <div id='wrapperone'></div>
+    <script src="d3.v3.min.js"></script>
+    <script>
+    	videojs("example_video_1").ready(function(){
+		  var myPlayer = this;
+		  myPlayer.width(window.innerWidth);
+		  myPlayer.height(window.innerHeight);
+		});
+    </script>
+    <script>
+		function move(p) {
+		  return [" M", p.x, p.y].join(" ");
+		}
+
+		function lineSeg(p) {
+		  return [" L", p.x, p.y].join(" ");
+		}
+
+		function arcSeg(p) {
+		  //A r r rotation large-arc sweep x y
+		  return [" A", p.r, p.r, p.rot, p.c, p.d, p.x, p.y].join(" ");
+		}
+
+		function bezSeg(p) {
+		  //x1,y1 and x2,y2 are control points
+		  return [" C", p.x1, p.y1, p.x2, p.y2, p.x, p.y].join(" ");
+		}
+		function smoothSeg(p) {
+		  //x2,y2 is the control point
+		  return [" S", p.x2, p.y2, p.x, p.y].join(" ");
+		}
+
+		function qbezSeg(p) {
+		  //x1 y1 x y
+		  return [" Q", p.x1, p.y1, p.x, p.y].join(" ");
+		}
+		function qsmoothSeg(p) {
+		  //x y
+		  return [" T", p.x, p.y].join(" ");
+		}
+
+
+		var pathD = move({x: 141, y: 79})
+		    + lineSeg({x: 208, y: 80})
+		    + lineSeg({x: 206, y: 236})
+			+ lineSeg({x: 173, y: 263});
+
+		var pathK =  move({x: 207, y: 79})
+		    + lineSeg({x: 209, y: 80})
+		    + lineSeg({x: 206, y: 210})
+			+ lineSeg({x: 204, y: 263})
+			+ lineSeg({x: 218, y: 150})
+            + lineSeg({x: 282, y: 77})
+			+ lineSeg({x: 213, y: 155})
+            + lineSeg({x: 292, y: 265});
+
+		var pathE = move({x: 262, y: 82})
+			+ lineSeg({x: 319, y: 85})
+		    + lineSeg({x: 265, y: 85})
+			+ lineSeg({x: 259, y: 85})
+		    + lineSeg({x: 253, y: 217})
+			+ lineSeg({x: 321, y: 214})
+			+ lineSeg({x: 248, y: 214})
+			+ lineSeg({x: 262, y: 135})
+			+ lineSeg({x: 294, y: 135});
+
+		var pathF = move({x: 262, y: 82})
+			+ lineSeg({x: 319, y: 85})
+		    + lineSeg({x: 265, y: 85})
+			+ lineSeg({x: 259, y: 85})
+		    + lineSeg({x: 253, y: 217})
+			+ lineSeg({x: 262, y: 135})
+			+ lineSeg({x: 321, y: 135});
+
+		var pathG = move({x: 262, y: 82})
+			+ lineSeg({x: 319, y: 85})
+		    + lineSeg({x: 265, y: 85})
+			+ lineSeg({x: 259, y: 85})
+		    + lineSeg({x: 253, y: 217})
+			+ lineSeg({x: 321, y: 214})
+			+ lineSeg({x: 248, y: 214})
+			+ lineSeg({x: 262, y: 135})
+			+ lineSeg({x: 294, y: 135});
+
+		var pathH = move({x: 262, y: 82})
+			+ lineSeg({x: 296, y: 149})
+		    + lineSeg({x: 329, y: 80})
+			+ lineSeg({x: 260, y: 215})
+			+ lineSeg({x: 291, y: 150})
+			+ lineSeg({x: 326, y: 246})
+		    
+		back = d3.scale.linear().domain([0,3]).range(['hsla(69, 100%, 36%, 1)','hsla(37, 100%, 45%, 0.95)']);
+
+		var svg = d3.select("#wrapperone").append('svg').attr({'width':window.innerWidth,'height':(window.innerHeight-35)}).append('g').attr({'transform':'scale('+0.5+','+0.5+') translate('+1750+','+920+')'}).style('text-shadow','2px -2px 2px rgba(150, 150, 150, 1)');
+
+
+
+		var j = svg.append("path")
+		  .attr("d", pathD)
+		  .style({
+		    fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var k = svg.append("path")
+		  .attr('transform','translate(50)')
+		  .attr("d", pathK)
+		  .style({
+		   fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var e1 = svg.append("path")
+		  .attr('transform','translate(100)')
+		  .attr("d", pathE)
+		  .style({
+		    fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var f = svg.append("path")
+		  .attr('transform','translate(200)')
+		  .attr("d", pathF)
+		  .style({
+		    fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var e2 = svg.append("path")
+		  .attr('transform','translate(300)')
+		  .attr("d", pathG)
+		  .style({
+		    fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var x = svg.append("path")
+		  .attr('transform','translate(400)')
+		  .attr("d", pathH)
+		  .style({
+		    fill: "none",
+		    stroke: "#fff",
+		    "stroke-width": 12,
+		    "stroke-linecap": "round",
+		    "stroke-linejoin": "round"
+		  })
+
+		var len = j.node().getTotalLength();
+        var offset = 0;
+
+        j.attr({
+          "stroke-dasharray": j.node().getTotalLength() + " " + j.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+        k.attr({
+          "stroke-dasharray": k.node().getTotalLength() + " " + k.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+        e1.attr({
+          "stroke-dasharray": e1.node().getTotalLength() + " " + e1.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+        f.attr({
+          "stroke-dasharray": f.node().getTotalLength() + " " + f.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+        e2.attr({
+          "stroke-dasharray": e2.node().getTotalLength() + " " + e2.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+        x.attr({
+          "stroke-dasharray": x.node().getTotalLength() + " " + x.node().getTotalLength(),
+          "stroke-dashoffset": offset
+        });
+
+		var z = d3.scale.linear().domain([0,1400]).range(['#fff','#fff']),i = 0 ;
+
+            j.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return j.node().getTotalLength()*(1-t);
+              }
+            })
+
+            k.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return k.node().getTotalLength()*(1-t);
+              }
+            })
+
+            e1.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return e1.node().getTotalLength()*(1-t);
+              }
+            })
+
+            f.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return f.node().getTotalLength()*(1-t);
+              }
+            })
+
+            e2.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return e2.node().getTotalLength()*(1-t);
+              }
+            })
+
+            x.transition()
+            .duration(5044)
+            .ease("linear")
+            .attrTween('stroke-dashoffset',function(d,i){
+              return function(t){
+              return x.node().getTotalLength()*(1-t);
+              }
+            })
+	</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js nojs"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/foundation.css">
+        <link rel="stylesheet" href="css/custom.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <style>
+        body {
+              margin: auto;
+              position: relative;
+            }
+
+            .node {
+              border: solid 1px white;
+              font: 14px sans-serif;
+              line-height: 12px;
+              overflow: hidden;
+              position: absolute;
+              text-indent: 2px;
+              font-weight: bold;
+              color:#fff;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div id="wrapper">
+            <header>
+                <div id="img"><img src="http://www.bobbyberberyan.com/wp-content/uploads/2012/03/HTML5CSS3Logos.svg" alt=""></div>
+                 <!-- <div id="img"><img src="http://ohdoylerules.com/content/images/css3.svg" alt=""></div> -->
+                <h3>D3 JS - SVG Canvas</h3>
+                
+            </header>
+            <section class="wrapper">
+            </section>
+            <footer id="footer">
+                <h6>jKefex JS - Experiments - Amruthaluri Kiran Kumar</h6>
+            </footer>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/d3.v3.min.js"></script>
+        <script>
+        var root = {
+                 "name": "HMM",
+                 "children": [
+                  {
+                   "name": "Alcohal Abuse",
+                   "children": [
+                    {
+                     "name": "cluster",
+                     "children": [
+                      {"name": "Liver Disease", "size": 3938},
+                      {"name": "Obesity", "size": 3812},
+                      {"name": "Neurologic", "size": 6714},
+                      {"name": "Heart", "size": 743}
+                     ]
+                    },
+                    {
+                     "name": "graph",
+                     "children": [
+                      {"name": "Paralysis", "size": 3534},
+                      {"name": "Asthma ", "size": 5731},
+                      {"name": "Periculas", "size": 7840},
+                      {"name": "Anaemia", "size": 5914},
+                      {"name": "Peptic Alcer", "size": 3416}
+                     ]
+                    },
+                    {
+                     "name": "graph",
+                     "children": [
+                      {"name": "Paralysis", "size": 3534},
+                      {"name": "Asthma ", "size": 5731},
+                      {"name": "Periculas", "size": 7840},
+                      {"name": "Anaemia", "size": 5914},
+                      {"name": "Peptic Alcer", "size": 3416}
+                     ]
+                    }
+                    ]
+                  }]
+                };
+                    
+        var margin = {top: 0, right: 10, bottom: 20, left: 10},
+                      width = 960 - margin.left - margin.right,
+                      height = 400 - margin.top - margin.bottom;
+
+        //var color = d3.scale.category10();
+        color = d3.scale.linear().domain([0,15]).range(['hsla(195, 100%, 50%, 1)','hsla(195, 100%, 31%, 1)']);
+
+        var treemap = d3.layout.treemap()
+                          .size([width,height])
+                          .sticky(true)
+                          .value(function(d) { return d.size; });
+
+        var div = d3.select(".wrapper").append("div")
+                          .style("position", "relative")
+                          .style("width", (width + margin.left + margin.right) + "px")
+                          .style("height", (height + margin.top + margin.bottom) + "px")
+                          .style("left", margin.left + "px")
+                          .style("top", margin.top + "px");
+
+          var node = div.datum(root).selectAll(".node")
+              .data(treemap.nodes)
+            .enter().append("div")
+              .attr("class", "node")
+              .call(position)
+              .style("background", function(d,i) { return d.children ? color(i) : null; })
+              .text(function(d) { return d.children ? null : d.name; });
+
+            node
+                .data(treemap.value(function(d) { return d.size; }).nodes)
+              .transition()
+                .duration(1500)
+                .call(position);
+
+        function position() {
+              this.style("left", function(d) { return d.x + "px"; })
+                  .style("top", function(d) { return d.y + "px"; })
+                  .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+                  .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
+            }
+
+        d3.selectAll('.node').on('mouseover',function(){
+          d3.select(this).style('box-shadow','3px 0px 30px #fff');
+        });
+        d3.selectAll('.node').on('mouseout',function(){
+          d3.select(this).style('box-shadow','none');
+        });
+        </script>
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-43056567-1', 'kiranml1.github.io');
+          ga('send', 'pageview');
+    </script>
+    <script>
+          (function(H){H.className=H.className.replace(/\bnojs\b/,'yepjs')})(document.documentElement);
+    </script>
+    </body>
+</html>

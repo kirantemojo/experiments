@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js nojs"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+    <!--[if lt IE 7]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <canvas id="myCanvas" resize></canvas>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+	<script type="text/javascript" src="js/paper-full.min.js"></script>
+	<script src="js/buzz.min.js"></script>
+	<script type="text/paperscript" canvas="myCanvas">
+
+		var count = 100;
+		var path = new Path.Circle({
+			center: [0, 0],
+			radius: 15,
+			fillColor: 'rgba(255, 218, 71, 1)',
+			strokeColor: 'black'
+		});
+
+		var rect = new Path.Rectangle({
+				point: [75, 75],
+				size: [95, 55],
+				fillColor: 'rgba(255, 218, 71, 1)'
+			});
+
+		var symbol = new Symbol(path);
+		view._context.globalCompositeOperation = 'lighter';
+		for (var i = 0; i < count; i++) {
+			var center = Point.random() * view.size;
+			var placedSymbol = symbol.place(center);
+			placedSymbol.scale(i / count);
+		}
+		var rect = new Symbol(rect);
+		for (var i = 0; i < count; i++) {
+			var center = Point.random() * view.size;
+			var placedSymbol = rect.place(center);
+			placedSymbol.scale(i / count);
+		}
+		function onMouseMove(event){
+			for (var i = 0; i < count; i++) {
+				var item = project.activeLayer.children[i];
+				vec = event.point - item.position;
+				poit = item.position + vec/200;
+				item.position = poit;
+			}
+		}
+
+		window.onmouseout = function(event){
+			for (var i = 0; i < count; i++) {
+				var item = project.activeLayer.children[i];
+				item.position = (new Point.random()) * view.size;
+			}
+		}
+
+		function onFrame(event) {
+			for (var i = 0; i < count; i++) {
+				var item = project.activeLayer.children[i];
+				item.position.x += item.bounds.width / 20;
+				if (item.bounds.left > view.size.width) {
+					item.position.x = -item.bounds.width;
+				}
+			}
+			document.body.style.backgroundColor = "hsla("+Math.round(Math.random()*60)+", 30%, 40%, 0.9)";
+		}
+	</script>
+	<script>
+		var mySound = new buzz.sound( "assets/Markandeya", {
+				    formats: [ "mp3","ogg"]
+				});
+		mySound.play();
+	</script>
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-43056567-1', 'kiranml1.github.io');
+	  ga('send', 'pageview');
+	</script>
+    <script>
+      (function(H){H.className=H.className.replace(/\bnojs\b/,'yepjs')})(document.documentElement);
+    </script>
+</body>
+</html>
